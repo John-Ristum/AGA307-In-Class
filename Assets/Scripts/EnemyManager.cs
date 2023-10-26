@@ -6,7 +6,7 @@ public enum EnemyType { OneHand, TwoHand, Archer }
 
 public enum PatrolType { Linear, Random, Loop }
 
-public class EnemyManager : MonoBehaviour
+public class EnemyManager : Singleton<EnemyManager>
 {
     public Transform[] spawnPoints;
     public string[] enemyNames;
@@ -48,6 +48,7 @@ public class EnemyManager : MonoBehaviour
             int rnd = Random.Range(0, enemyTypes.Length);
             GameObject enemy = Instantiate(enemyTypes[rnd], spawnPoints[i].position, spawnPoints[i].rotation);
             enemy.name = enemyNames[i];
+            enemies.Add(enemy);
         }
     }
 
@@ -61,6 +62,7 @@ public class EnemyManager : MonoBehaviour
             int rnd = Random.Range(0, enemyTypes.Length);
             GameObject enemy = Instantiate(enemyTypes[rnd], spawnPoints[i].position, spawnPoints[i].rotation);
             enemy.name = enemyNames[i];
+            enemies.Add(enemy);
             yield return new WaitForSeconds(Random.Range(1f, 3f));
         }
     }
@@ -68,7 +70,7 @@ public class EnemyManager : MonoBehaviour
     /// <summary>
     /// Spawns a random enemy at a random spawn point
     /// </summary>
-    void SpawnAtRandom()
+    public void SpawnAtRandom()
     {
         int rndEnemy = Random.Range(0, enemyTypes.Length);
         int rndSpawn = Random.Range(0, spawnPoints.Length);
@@ -91,7 +93,7 @@ public class EnemyManager : MonoBehaviour
     /// Kills a specific enemy
     /// </summary>
     /// <param name="_enemy">The enemy we want to kill</param>
-    void KillEnemy(GameObject _enemy)
+    public void KillEnemy(GameObject _enemy)
     {
         if (enemies.Count == 0)
             return;
@@ -163,5 +165,15 @@ public class EnemyManager : MonoBehaviour
                 Instantiate(wall, new Vector3(i, j, 0), transform.rotation);
             }
         }
+    }
+
+    private void OnEnable()
+    {
+        Enemy.OnEnemyDie += KillEnemy;
+    }
+
+    private void OnDisable()
+    {
+        Enemy.OnEnemyDie -= KillEnemy;
     }
 }

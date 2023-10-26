@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
+    public int damage = 20;
     public float lifeSpan = 5;      //Seconds until projectile is destroyed
 
     void Start()

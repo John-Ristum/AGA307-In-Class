@@ -29405,7 +29405,7 @@ GameObject:
   - component: {fileID: 2955102575500872104}
   m_Layer: 0
   m_Name: GreenOrb
-  m_TagString: Untagged
+  m_TagString: Projectile
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -29473,6 +29473,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34ada1277d015f74c88c35f68c44d80f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  damage: 20
   lifeSpan: 5
 --- !u!1 &2823140219261498090
 GameObject:

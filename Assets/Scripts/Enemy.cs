@@ -1,9 +1,13 @@
+using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class Enemy : MonoBehaviour
+public class Enemy : GameBehaviour
 {
+    public static event Action<GameObject> OnEnemyHit = null;
+    public static event Action<GameObject> OnEnemyDie = null;
+
+
     public PatrolType myPatrol;
     float baseSpeed = 1f;
     public float mySpeed = 1f;
@@ -11,11 +15,11 @@ public class Enemy : MonoBehaviour
 
     int baseHealth = 100;
     public int myHealth;
+    public int myScore;
 
     [Header("AI")]
     public EnemyType myType;
     public Transform moveToPos; //Needed for all patrols
-    public EnemyManager _EM;
     Transform startPos;         //Needed for loop patrol movement
     Transform endPos;           //Needed for loop patrol movement
     bool reverse;               //Needed for loop patrol movement
@@ -25,24 +29,25 @@ public class Enemy : MonoBehaviour
 
     void Start()
     {
-        _EM = FindObjectOfType<EnemyManager>();
-
         switch (myType)
         {
             case EnemyType.OneHand:
                 myHealth = baseHealth;
                 mySpeed = baseSpeed;
                 myPatrol = PatrolType.Linear;
+                myScore = 100;
                 break;
             case EnemyType.TwoHand:
                 myHealth = baseHealth * 2;
                 mySpeed = baseSpeed / 2;
                 myPatrol = PatrolType.Random;
+                myScore = 200;
                 break;
             case EnemyType.Archer:
                 myHealth = baseHealth / 2;
                 mySpeed = baseSpeed * 2;
                 myPatrol = PatrolType.Loop;
+                myScore = 300;
                 break;
 
         }
@@ -69,7 +74,7 @@ public class Enemy : MonoBehaviour
         print("HI");
         yield return new WaitForSeconds(1f);
         print("What took you so long?");
-        yield return new WaitForSeconds(Random.Range(2f, 5f));
+        yield return new WaitForSeconds(UnityEngine.Random.Range(2f, 5f));
         print("I miss you");
         yield return new WaitForSeconds(1f);
         print("Fine, I'm leaving");
@@ -116,4 +121,35 @@ public class Enemy : MonoBehaviour
         yield return new WaitForSeconds(Random.Range(1, 3));
         StartCoroutine(Move());
     }*/
+
+    private void Hit(int _damage)
+    {
+        myHealth -= _damage;
+        ScaleObject(this.gameObject, transform.localScale * 1.5f);
+        if (myHealth <= 0)
+        {
+            Die();
+        }
+        else
+        {
+            OnEnemyHit?.Invoke(this.gameObject);
+            //_GM.AddScore(myScore);
+        }
+    }
+
+    private void Die()
+    {
+        StopAllCoroutines();
+        OnEnemyDie?.Invoke(this.gameObject);
+        //_GM.AddScore(myScore * 2);
+        //_EM.KillEnemy(this.gameObject);
+        //Destroy(this.gameObject);
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.collider.CompareTag("Projectile"))
+            Hit(collision.gameObject.GetComponent<Projectile>().damage);
+            Destroy(collision.gameObject);
+    }
 }
