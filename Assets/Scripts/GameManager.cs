@@ -31,6 +31,7 @@ public class GameManager : Singleton<GameManager>
     public void AddScore(int _scoreIncrease)
     {
         score += _scoreIncrease;
+        _UI.UpdateScore(score);
     }
 
     void OnEnemyHit(GameObject _enemy)

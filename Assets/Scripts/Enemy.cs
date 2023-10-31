@@ -14,8 +14,12 @@ public class Enemy : GameBehaviour
     //float moveDistace = 1000f;
 
     int baseHealth = 100;
+    int maxHealth;
     public int myHealth;
     public int myScore;
+    EnemyHealthBar healthBar;
+
+    public string myName;
 
     [Header("AI")]
     public EnemyType myType;
@@ -29,22 +33,25 @@ public class Enemy : GameBehaviour
 
     void Start()
     {
+        healthBar = GetComponentInChildren<EnemyHealthBar>();
+        SetName(_EM.GetEnemyName());
+
         switch (myType)
         {
             case EnemyType.OneHand:
-                myHealth = baseHealth;
+                myHealth = maxHealth = baseHealth;
                 mySpeed = baseSpeed;
                 myPatrol = PatrolType.Linear;
                 myScore = 100;
                 break;
             case EnemyType.TwoHand:
-                myHealth = baseHealth * 2;
+                myHealth = maxHealth = baseHealth * 2;
                 mySpeed = baseSpeed / 2;
                 myPatrol = PatrolType.Random;
                 myScore = 200;
                 break;
             case EnemyType.Archer:
-                myHealth = baseHealth / 2;
+                myHealth = maxHealth = baseHealth / 2;
                 mySpeed = baseSpeed * 2;
                 myPatrol = PatrolType.Loop;
                 myScore = 300;
@@ -67,6 +74,12 @@ public class Enemy : GameBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Escape))
             StopAllCoroutines();
+    }
+
+    public void SetName(string _name)
+    {
+        name = _name;
+        healthBar.SetName(name);
     }
 
     IEnumerator Test()
@@ -125,6 +138,7 @@ public class Enemy : GameBehaviour
     private void Hit(int _damage)
     {
         myHealth -= _damage;
+        healthBar.UpdateHealthBar(myHealth, maxHealth);
         ScaleObject(this.gameObject, transform.localScale * 1.5f);
         if (myHealth <= 0)
         {

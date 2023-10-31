@@ -49,6 +49,7 @@ public class EnemyManager : Singleton<EnemyManager>
             GameObject enemy = Instantiate(enemyTypes[rnd], spawnPoints[i].position, spawnPoints[i].rotation);
             enemy.name = enemyNames[i];
             enemies.Add(enemy);
+            SetEnemyName(enemy);
         }
     }
 
@@ -61,8 +62,10 @@ public class EnemyManager : Singleton<EnemyManager>
         {
             int rnd = Random.Range(0, enemyTypes.Length);
             GameObject enemy = Instantiate(enemyTypes[rnd], spawnPoints[i].position, spawnPoints[i].rotation);
-            enemy.name = enemyNames[i];
+            //enemy.name = enemyNames[i];
             enemies.Add(enemy);
+            //SetEnemyName(enemy);
+            ShowEnemyCount();
             yield return new WaitForSeconds(Random.Range(1f, 3f));
         }
     }
@@ -74,10 +77,11 @@ public class EnemyManager : Singleton<EnemyManager>
     {
         int rndEnemy = Random.Range(0, enemyTypes.Length);
         int rndSpawn = Random.Range(0, spawnPoints.Length);
-        int rndName = Random.Range(0, enemyNames.Length);
+        //int rndName = Random.Range(0, enemyNames.Length);
         GameObject enemy = Instantiate(enemyTypes[rndEnemy], spawnPoints[rndSpawn].position, spawnPoints[rndSpawn].rotation);
         //enemy.name = enemyNames[rndName];
         enemies.Add(enemy);
+        //SetEnemyName(enemy);
         ShowEnemyCount();
     }
 
@@ -86,7 +90,25 @@ public class EnemyManager : Singleton<EnemyManager>
     /// </summary>
     void ShowEnemyCount()
     {
-        print("Number of enemies: " + enemies.Count);
+        _UI.UpdateEnemyCount(enemies.Count);
+    }
+
+    /// <summary>
+    /// Sets the enemy name
+    /// </summary>
+    /// <param name="_enemy"></param>
+    void SetEnemyName(GameObject _enemy)
+    {
+        //_enemy.GetComponent<Enemy>().SetName(enemyNames[Random.Range(0, enemyNames.Length)]);
+    }
+
+    /// <summary>
+    /// Gets an enemy name
+    /// </summary>
+    /// <returns></returns>
+    public string GetEnemyName()
+    {
+        return enemyNames[Random.Range(0, enemyNames.Length)];
     }
 
     /// <summary>
