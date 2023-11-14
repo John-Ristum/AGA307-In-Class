@@ -17,6 +17,8 @@ public class Enemy : GameBehaviour
     int maxHealth;
     public int myHealth;
     public int myScore;
+    public float myAttackRange = 2f;
+    public int myDamage = 20;
     EnemyHealthBar healthBar;
 
     public string myName;
@@ -29,10 +31,13 @@ public class Enemy : GameBehaviour
     bool reverse;               //Needed for loop patrol movement
     int patrolPoint = 0;        //Needed for linear patrol movemnt
 
+    Animator anim;
+
 
 
     void Start()
     {
+        anim = GetComponent<Animator>();
         healthBar = GetComponentInChildren<EnemyHealthBar>();
         SetName(_EM.GetEnemyName());
 
@@ -43,23 +48,28 @@ public class Enemy : GameBehaviour
                 mySpeed = baseSpeed;
                 myPatrol = PatrolType.Linear;
                 myScore = 100;
+                myDamage = 20;
                 break;
             case EnemyType.TwoHand:
                 myHealth = maxHealth = baseHealth * 2;
                 mySpeed = baseSpeed / 2;
                 myPatrol = PatrolType.Random;
                 myScore = 200;
+                myDamage = 30;
                 break;
             case EnemyType.Archer:
                 myHealth = maxHealth = baseHealth / 2;
                 mySpeed = baseSpeed * 2;
                 myPatrol = PatrolType.Loop;
                 myScore = 300;
+                myDamage = 10;
                 break;
 
         }
 
         SetUpAI();
+        if(GetComponentInChildren<EnemyWeapon>() != null)
+            GetComponentInChildren<EnemyWeapon>().damage = myDamage;
     }
 
     void SetUpAI()
@@ -114,12 +124,25 @@ public class Enemy : GameBehaviour
         transform.LookAt(moveToPos);
         while(Vector3.Distance(transform.position, moveToPos.position) > 0.3f)
         {
+            if(Vector3.Distance(transform.position, _PLAYER.transform.position) < myAttackRange)
+            {
+                StopAllCoroutines();
+                StartCoroutine(Attack());
+                yield break;
+            }
             transform.position = Vector3.MoveTowards(transform.position, moveToPos.position, Time.deltaTime * mySpeed);
             yield return null;
         }
 
         yield return new WaitForSeconds(1f);
 
+        StartCoroutine(Move());
+    }
+
+    IEnumerator Attack()
+    {
+        PlayAnimation("Attack");
+        yield return new WaitForSeconds(1);
         StartCoroutine(Move());
     }
 
@@ -139,13 +162,15 @@ public class Enemy : GameBehaviour
     {
         myHealth -= _damage;
         healthBar.UpdateHealthBar(myHealth, maxHealth);
-        ScaleObject(this.gameObject, transform.localScale * 1.5f);
+        //ScaleObject(this.gameObject, transform.localScale * 1.5f);
         if (myHealth <= 0)
         {
             Die();
         }
         else
         {
+            int rnd = UnityEngine.Random.Range(1, 4);
+            PlayAnimation("Hit");
             OnEnemyHit?.Invoke(this.gameObject);
             //_GM.AddScore(myScore);
         }
@@ -153,11 +178,19 @@ public class Enemy : GameBehaviour
 
     private void Die()
     {
+        GetComponent<Collider>().enabled = false;
+        PlayAnimation("Die");
         StopAllCoroutines();
         OnEnemyDie?.Invoke(this.gameObject);
         //_GM.AddScore(myScore * 2);
         //_EM.KillEnemy(this.gameObject);
         //Destroy(this.gameObject);
+    }
+
+    void PlayAnimation(string _animationName)
+    {
+        int rnd = UnityEngine.Random.Range(1, 4);
+        anim.SetTrigger(_animationName + rnd);
     }
 
     private void OnCollisionEnter(Collision collision)

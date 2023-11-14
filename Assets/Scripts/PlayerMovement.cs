@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerMovement : GameBehaviour
+public class PlayerMovement : Singleton<PlayerMovement>
 {
     public CharacterController controller;
     public float speed = 10f;
@@ -15,6 +15,7 @@ public class PlayerMovement : GameBehaviour
 
     private Vector3 velocity;
     private bool isGrounded;
+    public float health = 100;
 
     void Update()
     {
@@ -39,5 +40,13 @@ public class PlayerMovement : GameBehaviour
         velocity.y += gravity * Time.deltaTime;
         controller.Move(velocity * Time.deltaTime);
 
+    }
+
+    public void Hit(int damage)
+    {
+        health -= damage;
+        print("Player health: " + health);
+        if (health <= 0)
+            _GM.gameState = GameState.GameOver;
     }
 }

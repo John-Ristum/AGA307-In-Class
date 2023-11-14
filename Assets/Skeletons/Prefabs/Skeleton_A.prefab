@@ -847,7 +847,7 @@ Animator:
   m_GameObject: {fileID: 146754}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: 20300ac630e0fcd4dbab63a9b39cdafa, type: 3}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 00c840b0caaa40348a43a26e860ec959, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
   m_ApplyRootMotion: 1
@@ -873,6 +873,8 @@ MonoBehaviour:
   mySpeed: 1
   myHealth: 0
   myScore: 0
+  myAttackRange: 2
+  myName: 
   myType: 0
   moveToPos: {fileID: 0}
 --- !u!136 &5286286066313736372
@@ -1029,6 +1031,8 @@ GameObject:
   - component: {fileID: 455184}
   - component: {fileID: 3352776}
   - component: {fileID: 2316400}
+  - component: {fileID: 575685493220622642}
+  - component: {fileID: 1003159915935015102}
   m_Layer: 0
   m_Name: shortSword
   m_TagString: Untagged
@@ -1101,6 +1105,32 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!136 &575685493220622642
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 159632}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  m_Radius: 0.05
+  m_Height: 0.62
+  m_Direction: 2
+  m_Center: {x: 0.0000000384089, y: 0.00000004239149, z: 0.34}
+--- !u!114 &1003159915935015102
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 159632}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: afb830824c6b9bc42af25a543327b17b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &160634
 GameObject:
   m_ObjectHideFlags: 0
