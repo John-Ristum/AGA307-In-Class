@@ -4,7 +4,7 @@ using UnityEngine;
 
 public enum EnemyType { OneHand, TwoHand, Archer }
 
-public enum PatrolType { Linear, Random, Loop }
+public enum PatrolType { Patrol, Detect, Chase, Attack, Die }
 
 public class EnemyManager : Singleton<EnemyManager>
 {
