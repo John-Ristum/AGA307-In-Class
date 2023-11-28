@@ -37,6 +37,7 @@ public class Enemy : GameBehaviour
     NavMeshAgent agent;
 
     Animator anim;
+    AudioSource audioSource;
 
 
 
@@ -44,6 +45,7 @@ public class Enemy : GameBehaviour
     {
         anim = GetComponent<Animator>();
         agent = GetComponent<NavMeshAgent>();
+        audioSource = GetComponent<AudioSource>();
         healthBar = GetComponentInChildren<EnemyHealthBar>();
         SetName(_EM.GetEnemyName());
 
@@ -179,6 +181,7 @@ public class Enemy : GameBehaviour
         myPatrol = PatrolType.Attack;
         ChangeSpeed(0);
         PlayAnimation("Attack");
+        _AM.PlaySound(_AM.GetEnemyAttackSound(), audioSource);
         yield return new WaitForSeconds(1);
         ChangeSpeed(mySpeed);
         myPatrol = PatrolType.Chase;
@@ -211,6 +214,7 @@ public class Enemy : GameBehaviour
             PlayAnimation("Hit");
             OnEnemyHit?.Invoke(this.gameObject);
             //_GM.AddScore(myScore);
+            _AM.PlaySound(_AM.GetEnemyHitSound(), audioSource);
         }
     }
 
@@ -222,12 +226,18 @@ public class Enemy : GameBehaviour
         PlayAnimation("Die");
         StopAllCoroutines();
         OnEnemyDie?.Invoke(this.gameObject);
+        _AM.PlaySound(_AM.GetEnemyDieSound(), audioSource);
     }
 
     void PlayAnimation(string _animationName)
     {
         int rnd = UnityEngine.Random.Range(1, 4);
         anim.SetTrigger(_animationName + rnd);
+    }
+
+    public void PlayFootstep()
+    {
+        _AM.PlaySound(_AM.GetFootstepSound(), audioSource, 0.1f);
     }
 
     private void OnCollisionEnter(Collision collision)
