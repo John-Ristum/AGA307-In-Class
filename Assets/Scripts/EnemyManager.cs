@@ -123,6 +123,7 @@ public class EnemyManager : Singleton<EnemyManager>
         //Destroy(_enemy);
         enemies.Remove(_enemy);
         ShowEnemyCount();
+        _DATA.SetEnemyKillTotal();
     }
 
     /// <summary>
